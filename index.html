@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>അന്താക്ഷരി</title>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gayathri:wght@100;400;800&family=Manrope:wght@200..1000&display=swap">
+
+<style>
+:root{--ink:#2a1238;--card:#fff8ee;--acc:#e8347a;--acc2:#0e9f8e;--gold:#ffc83d;--mute:#7b6688;--ring:#f0d8bd;--bub:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px);background:#2a0f4d}
+body{margin:0;min-height:100vh;color:#fff;font-family:"Gayathri","Noto Sans Malayalam","Manjari",system-ui,sans-serif;font-weight:500;line-height:1.5;
+background:radial-gradient(90% 55% at 8% 0%,#ff7b54 0,transparent 62%),radial-gradient(80% 55% at 100% 12%,#7b5cff 0,transparent 62%),radial-gradient(70% 45% at 50% 100%,#00b8a9 0,transparent 62%),#2a0f4d;background-attachment:fixed}
+main{max-width:640px;margin:0 auto;padding:12px 14px 40px}
+h1{margin:6px 0 0;text-align:center;font-size:clamp(3rem,15vw,5rem);font-weight:800;line-height:1.25}
+h1 span{display:inline-block;color:var(--c);transform:rotate(var(--r));text-shadow:0 4px 0 rgba(58,10,90,.6),0 0 26px rgba(255,255,255,.3);margin:0 .02em}
+.sub{color:#ffeaf5;margin:0 0 10px;text-align:center}
+.panel{background:var(--card);color:var(--ink);border-radius:20px;padding:14px;margin-top:8px;box-shadow:0 10px 28px rgba(20,0,50,.35)}
+.panel .sub{color:var(--mute);text-align:left}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}
+button,input{font:inherit;color:inherit}
+.chip{border:2px solid var(--ring);background:var(--card);color:var(--ink);border-radius:99px;padding:3px 14px;cursor:pointer}
+.chip[aria-pressed=true]{border-color:var(--acc);background:var(--acc);color:#fff}
+.chip:disabled{opacity:.7;cursor:default}
+.big{background:linear-gradient(135deg,#14bfa9,#0d8c7d);color:#fff;border:0;border-radius:14px;padding:6px 20px;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.big.alt{background:linear-gradient(135deg,#ff5a9a,#d92a6d)}
+.chip.red{background:#e53935;border-color:#e53935;color:#fff}
+#startMsg:empty{display:none}
+.big.ghost{background:var(--card);color:var(--ink);border:2px solid var(--ring);box-shadow:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input{border:2px solid var(--ring);border-radius:12px;padding:5px 12px;background:#fff;color:var(--ink);min-width:0}
+#stage{position:relative;width:100%;max-width:580px;aspect-ratio:1;margin:8px auto;border-radius:50%;overflow:hidden;box-shadow:0 0 0 6px rgba(255,200,61,.55),0 14px 40px rgba(0,0,0,.45)}
+.s-camp{background:radial-gradient(circle,#ffb347 0 3%,#4a2c14 4% 12%,#2f6b47 13% 100%)}
+.s-party{background:radial-gradient(circle,#ff4fa3 0 3%,#6a2f9a 4% 12%,#2d1b69 13% 100%)}
+.s-room{background:radial-gradient(circle,#c9884f 0 12%,#f0dcc0 13% 100%)}
+.mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(2rem,9vw,3.4rem);text-align:center;line-height:1.1;z-index:1}
+.mid small{display:block;font-size:.85rem;color:#fff;margin-top:2px;text-shadow:0 1px 3px #000a}
+.seat{position:absolute;width:23%;transform:translate(-50%,-56%);text-align:center;transition:opacity .3s,filter .3s}
+.seat svg{width:100%;height:auto;display:block;overflow:visible}
+.seat.on svg{animation:bob .7s ease-in-out infinite alternate;filter:drop-shadow(0 0 8px var(--gold))}
+.seat.out{opacity:.45;filter:grayscale(1)}
+.seat.out svg{transform:translateY(6px) scale(.92)}
+.nm{font-size:.8rem;color:#fff;text-shadow:0 1px 3px #000c;line-height:1.1;margin-top:-2px}
+.s-room .nm{color:#2a1238;text-shadow:none}
+.bub{position:absolute;left:50%;bottom:98%;transform:translateX(-50%);background:var(--bub);color:var(--ink);border-radius:14px;padding:1px 10px;font-size:.78rem;white-space:nowrap;box-shadow:0 2px 8px #0005;z-index:400}
+@keyframes bob{to{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.seat.on svg{animation:none}}
+.need{font-size:1.15rem;margin:0 0 8px}
+.need b{display:inline-grid;place-items:center;min-width:2em;height:2em;padding:0 6px;border-radius:10px;background:var(--acc);color:#fff;font-size:1.3rem;font-weight:800}
+.bar{height:10px;border-radius:9px;background:var(--ring);overflow:hidden;margin-bottom:10px}
+#fill{height:100%;width:100%;background:var(--acc2);transition:width .5s linear,background .3s}
+#msg{min-height:1.3em;margin:6px 0 0;color:var(--mute)}
+.code{font-size:1.8rem;font-weight:800;letter-spacing:.12em;background:#ffeacb;border-radius:12px;padding:0 14px}
+.letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px}
+.letters button{border:2px solid var(--ring);background:#fff;border-radius:10px;padding:2px 0;font-weight:800;font-size:1.2rem;cursor:pointer}
+.letters button:hover{background:var(--acc);color:#fff}
+ol{margin:8px 0 0;padding-left:1.3em;color:var(--mute);font-size:.9rem}
+.fin{list-style:none;padding:0;margin:8px 0}.fin li{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:#fff;margin-bottom:6px}.fin li:first-child{background:linear-gradient(135deg,#fff3c4,#ffe08a);font-weight:800}.fin b{margin-left:auto;font-size:1.3rem}.bdg{font-size:.78rem;background:var(--card);border:1px solid var(--ring);border-radius:99px;padding:0 8px}.ttl{font-size:1.6rem;font-weight:800;text-align:center;margin:0}
+.toast{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:998;max-width:480px;margin:0 auto;background:#fff;color:var(--ink);border-radius:16px;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.45);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.info summary{cursor:pointer;font-weight:800;font-size:1.05rem}
+.info ol,.info ul{color:var(--ink);font-size:.95rem;margin:8px 0 0}
+.info li{margin-bottom:4px}
+.credit{text-align:center;color:#ffeaf5;font-size:.9rem;margin:14px 0 0}
+.credit a{color:var(--gold);font-weight:800;word-break:break-all}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1 aria-label="അന്താക്ഷരി"><span style="--c:#ffd23f;--r:-5deg">അ</span><span style="--c:#ff7ab8;--r:4deg">ന്താ</span><span style="--c:#5ef2d6;--r:-3deg">ക്ഷ</span><span style="--c:#fff;--r:5deg">രി</span></h1>
+<h2 lang="ml" aria-label="പാട്ട് മത്സരം" align="center">പാട്ട്</span> <span>മത്സരം</h2>
+ 
+<section id="start" class="panel">
+  <div class="row"><label for="nick">Your name</label><input id="nick" placeholder="Singer" maxlength="12" autocomplete="off"></div>
+  <div class="row"><button class="big" id="bHost">Host a game</button></div>
+  <div class="row"><input id="jcode" placeholder="Invite code" maxlength="6" autocomplete="off" aria-label="Invite code"><button class="big alt" id="bJoin">Join</button></div>
+  <p class="sub" id="startMsg"></p>
+</section>
+
+<div id="game" hidden>
+  <div class="row" style="justify-content:flex-end;margin:0"><button class="chip" id="leave">🚪 Leave</button></div>
+  <div id="stage" class="s-camp" aria-live="polite"></div>
+  <div class="row" style="justify-content:center"><button class="chip" id="vc" hidden>🎙️ Mic on</button>
+  <button class="chip" id="hz" hidden>⏸ Pause timer</button></div>
+  <div class="row" style="justify-content:center"><button class="chip" id="rm" hidden>−</button><span id="rinfo"></span><button class="chip" id="rp" hidden>+</button><button class="chip" id="endBtn" hidden>🏁 End game</button></div>
+ 
+  <section class="panel" id="lobby" hidden>
+    <div class="row" id="scenes" role="group" aria-label="Scene"></div>
+    <div class="row"><span>Invite code</span><span class="code" id="codeShow"></span></div>
+    <p class="sub" id="lobbyHint"></p>
+    <div class="row" id="hostBtns">
+      <button class="big ghost" id="bFr2" hidden>👥 Invite friends</button>
+      <button class="big ghost" id="bCopy">📋 Copy link</button>
+      <button class="big" id="bGo">Start</button>
+    </div>
+  </section>
+ 
+  <section class="panel" id="pick" hidden>
+    <p class="need" id="pickTxt"></p>
+    <div class="bar"><div id="fill0" style="height:100%;width:100%;background:var(--acc2)"></div></div>
+    <div class="letters" id="letters"></div>
+  </section>
+ 
+  <section class="panel" id="play" hidden>
+    <p class="need" id="need"></p>
+    <div class="bar"><div id="fill"></div></div>
+    <div id="mine" hidden>
+      <div class="row"><button class="big alt" id="mic">🎤 Start singing</button>
+        <span class="sub" style="margin:0" id="micHelp"></span><button class="big ghost" id="bPass">⏭ Pass</button></div>
+    </div>
+    <div id="vote" hidden><div class="row"><button class="big" id="vUp">👍 Valid</button><button class="big alt" id="vDn">👎 Invalid</button></div></div>
+    <div id="nextL" hidden>
+      <div class="row"><label for="nl">Next letter or last word</label><input id="nl" maxlength="20" autocomplete="off" placeholder="letter or word" style="width:11em;text-align:center;font-weight:800"><button class="big" id="bNext">Next</button></div>
+    </div>
+    <p id="msg"></p>
+    <ol id="log" reversed></ol>
+  </section>
+ 
+  <section class="panel" id="final" hidden><p class="ttl" id="fTitle"></p><ul class="fin" id="fList"></ul><p class="sub" id="fMsg"></p></section>
+  <div class="row" id="endRow" hidden><button class="big" id="bAgain">Home</button></div>
+</div>
+<section class="panel" id="acct" hidden>
+  <div id="acctOut"><button class="big ghost" id="gIn">🔐 Sign in with Google</button></div>
+  <div id="acctIn" hidden>
+    <div class="row"><img id="pic" alt="" width="56" height="56" style="border-radius:50%;object-fit:cover;background:#ffeacb" hidden><b id="pName" style="flex:1"></b><button class="chip red" id="gOut">Logout</button></div>
+    <div class="row" id="gdr"><span>Gender</span><button class="chip" data-gd="m" aria-pressed="false">Male</button><button class="chip" data-gd="f" aria-pressed="false">Female</button><button class="chip" data-gd="o" aria-pressed="false">Other</button></div>
+    <div class="row"><label for="dress">Dress colour</label><input type="color" id="dress" value="#d6336c" style="padding:0;width:48px;height:36px"><span id="prev" style="width:44px;display:inline-block"></span></div>
+    <div class="row"><button class="chip" id="tF" aria-pressed="true">👥 Friends</button><button class="chip" id="tH" aria-pressed="false">📜 History</button><button class="chip" id="tP" aria-pressed="false">🏆 LeaderBoard</button><button class="chip" id="tW" aria-pressed="false">🥇 Wins</button></div>
+    <div id="fr">
+      <div class="row"><span>Your friend code</span><span class="code" id="myFc">…</span></div>
+      <div class="row"><input id="fcIn" placeholder="Friend's code" maxlength="8" autocomplete="off" aria-label="Friend's code"><button class="big alt" id="fcAdd">Add</button></div>
+      <p class="sub" id="fcMsg"></p>
+      <div id="frBody"></div>
+    </div>
+    <div id="sBody" hidden></div>
+  </div>
+</section>
+<section class="panel info" id="howto">
+  <details>
+    <summary>📖 How to play</summary>
+    <ol>
+      <li><b>Host</b> a game (or <b>Join</b> with a 6-letter invite code). 2 to 8 players can play.</li>
+      <li>The host picks a scene and the number of rounds, then taps <b>Start</b>.</li>
+      <li>The first singer picks a starting letter (or one is chosen automatically after 20 seconds).</li>
+      <li>On your turn, tap <b>Start singing</b> and sing a song that begins with the shown letter. You have 20 seconds to begin and the mic goes live for up to 90 seconds. Tap <b>Finished</b> when done.</li>
+      <li>Everyone else votes 👍 Valid or 👎 Invalid. A valid song gives <b>+10</b> points, an invalid one <b>-10</b>.</li>
+      <li>Then enter the <b>last letter or word</b> of your song. The next singer must start with it.</li>
+      <li>Can't think of a song? Tap <b>Pass</b>. The next singer then gets only <b>5</b> points. Running out of time puts you out of the game.</li>
+      <li>The game ends when someone reaches <b>50 points</b>, rounds are over, or only one player is left. Highest score wins! 🏆</li>
+    </ol>
+    <p class="sub" style="margin-top:8px">Sign in with Google (on the home screen or in the lobby) to save your history, wins, leaderboard rank and to add friends.</p>
+  </details>
+</section>
+<p class="credit">Developed by <b>Jishnu Suresh</b> with Claude AI, Firebase and Netlify.<br>
+Suggestions or feedback? ✉️ <a href="mailto:ijishnusuresh@gmail.com?subject=Antakshari%20feedback">ijishnusuresh@gmail.com</a></p>
+</main>
+<div class="toast" id="toast" hidden><span id="toastTxt" style="flex:1"></span><button class="big" id="toastJoin">Join</button><button class="chip" id="toastAdd">➕ Add friend</button><button class="chip" id="toastX">✖</button></div>
+ 
+<script>
+const SCENES={camp:["🏕️ Campfire","🔥","by the fire"],party:["🎉 Party","🪩","on the dance floor"],room:["🛋️ Living room","🎶","around the table"]};
+const MAL="അ ആ ഇ ഉ എ ഒ ക ഗ ച ജ ട ത ദ ന പ ബ മ യ ര ല വ ശ സ ഹ".split(" ");
+const LK=[{s:"#f1c27d",h:"#2b1b12",t:"#d6336c",p:"#2b4a7a",st:0},{s:"#c68642",h:"#111",t:"#1c7c6d",p:"#4a4a4a",st:1},{s:"#8d5524",h:"#e8e8e8",t:"#e8a33d",p:"#6b4a2b",st:2},{s:"#e0ac69",h:"#5a2d0c",t:"#5b6bd6",p:"#222",st:1},{s:"#f1c27d",h:"#8b1a1a",t:"#f4f4f4",p:"#7a3b8c",st:0},{s:"#c68642",h:"#222",t:"#e05a2b",p:"#334466",st:2},{s:"#ffdbac",h:"#d9a441",t:"#2aa198",p:"#444",st:1},{s:"#8d5524",h:"#111",t:"#8e44ad",p:"#aa3333",st:0}];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const okL=c=>typeof c==="string"&&c.length>0&&c.length<=8&&/^[\p{L}\p{M}]+$/u.test(c);
+const seg=t=>{try{return Array.from(new Intl.Segmenter("ml",{granularity:"grapheme"}).segment(t),x=>x.segment)}catch(e){return Array.from(t)}};
+const lastLetter=t=>{const g=seg(String(t).trim().replace(/[^\p{L}\p{M}]/gu,""));return g[g.length-1]||""};
+ 
+const look=(p,i)=>{const l={...LK[i%8]};if(/^#[0-9a-f]{6}$/i.test(p.dc||""))l.t=p.dc;if(p.gd==="f")l.st=1;else if(p.gd==="m")l.st=0;return l};
+// full-body seated figure
+function fig(l,on){
+  const hb=l.st===1?`<path d="M17 21a13 13 0 0 1 26 0v24h-6V22H23v23h-6z" fill="${l.h}"/>`:"";
+  const hf=l.st===2?`<circle cx="30" cy="4" r="5" fill="${l.h}"/><path d="M19 18a11 11 0 0 1 22 0z" fill="${l.h}"/>`:`<path d="M19 18a11 11 0 0 1 22 0c-4-3-7-4-11-4s-7 1-11 4z" fill="${l.h}"/>`;
+  const arm=on
+    ?`<path d="M41 36l6-12" stroke="${l.t}" stroke-width="7" stroke-linecap="round"/><circle cx="47" cy="22" r="3.6" fill="${l.s}"/><rect x="45" y="12" width="4" height="9" rx="2" fill="#333"/><circle cx="47" cy="11" r="3" fill="#888"/>`
+    :`<path d="M41 36l4 18" stroke="${l.t}" stroke-width="7" stroke-linecap="round"/><circle cx="45" cy="56" r="3.6" fill="${l.s}"/>`;
+  return `<svg viewBox="-2 -4 64 98" role="img" aria-hidden="true">
+<ellipse cx="30" cy="66" rx="24" ry="7" fill="#6b4a2b"/>
+${hb}
+<rect x="17" y="66" width="12" height="18" rx="5" fill="${l.p}"/><rect x="31" y="66" width="12" height="18" rx="5" fill="${l.p}"/>
+<ellipse cx="23" cy="87" rx="7" ry="3.5" fill="#222"/><ellipse cx="37" cy="87" rx="7" ry="3.5" fill="#222"/>
+<rect x="17" y="30" width="26" height="38" rx="10" fill="${l.t}"/>
+<path d="M19 36l-4 18" stroke="${l.t}" stroke-width="7" stroke-linecap="round"/><circle cx="15" cy="56" r="3.6" fill="${l.s}"/>
+${arm}
+<circle cx="30" cy="19" r="11" fill="${l.s}"/>${hf}
+<circle cx="26" cy="19" r="1.5" fill="#222"/><circle cx="34" cy="19" r="1.5" fill="#222"/>
+${on?`<ellipse cx="30" cy="25" rx="3" ry="3.4" fill="#7a1f1f"/>`:`<path d="M26 24q4 3 8 0" stroke="#7a1f1f" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}
+</svg>`;
+}
+ 
+// ---------- state ----------
+let S=null,isHost=false,myName="Singer",code="",peer=null,conn=null,mic=null,userMic=true,voiceReady=false;
+const conns={},names={},guids={},profs={},calls={};
+const myId=()=>peer?peer.id:null;
+const meIdx=()=>{const id=myId();return S?S.seats.findIndex(s=>s.id===id):-1};
+const fresh=()=>({sc:"camp",ph:"lobby",seats:[],c:0,L:"",t:20,pl:90,pz:0,pk:0,sg:0,hz:0,hold:0,msg:"",log:[],bub:null,w:-1,R:5,rd:1,vt:0,v:{},half:0,code});
+function bc(){render();sendAll();voiceSync()}
+function sendAll(){for(const id in conns){try{conns[id].send({t:"st",s:S})}catch(e){}}}
+ 
+// ---------- host game logic ----------
+function buildSeats(){
+  const mk=(id,n,g,pf)=>({id,n,g:g||"",gd:(pf&&pf.gd)||"",dc:(pf&&pf.dc)||"",a:1,p:0,w:0,u:0});S.seats=[mk(peer.id,myName,me_user&&me_user.uid,prof)].concat(Object.keys(names).map(id=>mk(id,names[id],guids[id],profs[id]))).slice(0,8);
+  if(S.seats.length>1)S.msg="";
+}
+function startGame(){
+  if(S.seats.length<2){S.msg="Need at least 2 players.";return bc()}
+  S.ph="pick";S.c=0;S.t=20;S.msg="";S.log=[];S.rd=1;S.half=0;S.vt=0;bc();
+}
+function chooseLetter(c){S.L=c;S.ph="play";S.t=20;S.pl=90;S.pz=0;S.pk=0;S.msg="";bc()}
+const alive=()=>S.seats.filter(s=>s.a);
+function endGame(){S.ph="end";S.bub=null;S.hold=0;S.pz=0;S.pk=0;S.vt=0;S.msg="";bc()}
+function next(){
+  if(alive().length<=1)return endGame();
+  const old=S.c;do{S.c=(S.c+1)%S.seats.length}while(!S.seats[S.c].a);
+  if(S.c<=old&&++S.rd>S.R)return endGame();
+  S.t=20;S.pl=90;S.pz=0;S.pk=0;S.sg=0;S.msg="";S.hold=0;S.bub=null;bc();
+}
+function out(i,why){
+  const s=S.seats[i];s.a=0;S.pz=0;S.pk=0;S.vt=0;S.half=0;S.msg=s.n+" "+why+".";
+  S.log.unshift("❌ "+s.n+" is out");S.log.length=Math.min(S.log.length,5);S.hold=1;bc();
+  setTimeout(()=>{if(alive().length<=1)endGame();else next()},1800);
+}
+function finish(){
+  const s=S.seats[S.c];S.log.unshift("🎤 "+s.n+" sang");S.log.length=Math.min(S.log.length,5);
+  S.bub={i:S.c,t:"finished"};S.vt=1;S.v={};S.sg=0;S.t=15;S.pz=0;S.msg="";if(alive().length<2)return tally();bc();
+}
+function tally(){
+  const s=S.seats[S.c],v=Object.values(S.v),up=v.filter(x=>x>0).length,dn=v.length-up,b=S.half?5:10,pts=up>dn?b:dn>up?-b:0;
+  s.p+=pts;s.u+=up;if(up>dn)s.w++;
+  S.half=0;S.vt=0;S.pk=1;S.t=15;S.msg="👍 "+up+" : 👎 "+dn+" → "+(pts>0?"+":"")+pts+" pts";
+  S.log.unshift(s.n+": "+S.msg);S.log.length=Math.min(S.log.length,5);
+  if(S.seats.some(x=>x.p>=50)){S.hold=1;bc();setTimeout(endGame,2500);return}
+  bc();
+}
+function doPass(i,why){
+  const s=S.seats[i];S.half=1;S.pz=0;S.sg=0;S.hold=1;S.msg=s.n+": "+why+" (next gets 5 pts)";
+  S.log.unshift("⏭ "+s.n+" "+why);S.log.length=Math.min(S.log.length,5);bc();setTimeout(next,1500);
+}
+function pickNext(c){
+  S.L=c;S.pk=0;S.half=0;S.hold=1;S.msg="";S.log.unshift(S.seats[S.c].n+" chose "+c.toUpperCase());S.log.length=Math.min(S.log.length,5);
+  bc();setTimeout(next,1200);
+}
+function act(pid,d){
+  if(!isHost||!S)return;
+  if(d.k==="vote"){
+    if(S.ph==="play"&&S.vt&&!S.hold&&(d.v===1||d.v===-1)){const i=S.seats.findIndex(x=>x.id===pid);
+      if(i>=0&&i!==S.c&&S.seats[i].a&&!S.v[pid]){S.v[pid]=d.v;if(Object.keys(S.v).length>=alive().length-1)tally();else bc()}}
+    return;
+  }
+  if(S.hold)return;const s=S.seats[S.c];if(!s||s.id!==pid||!s.a)return;
+  if(d.k==="letter"&&S.ph==="pick"&&okL(d.c))chooseLetter(d.c);
+  else if(d.k==="letter"&&S.ph==="play"&&S.pk&&okL(d.c))pickNext(d.c);
+  else if(d.k==="pause"&&S.ph==="play"&&!S.pk&&!S.vt){S.pz=S.pl>0?1:0;if(S.pz)S.sg=1;bc()}
+  else if(d.k==="done"&&S.ph==="play"&&!S.pk&&!S.vt&&S.sg)finish();
+  else if(d.k==="pass"&&S.ph==="play"&&!S.pk&&!S.vt&&!S.sg)doPass(S.c,"passed");
+}
+function doAct(d){if(isHost)act(myId(),d);else if(conn&&conn.open)conn.send({t:"act",d})}
+setInterval(()=>{
+  if(!isHost||!S||S.hold||S.hz||(S.ph!=="play"&&S.ph!=="pick"))return;
+  if(S.pz){S.pl-=.5;if(S.pl<=0){finish();return}}else S.t-=.5;
+  if(S.t<=0){if(S.ph==="pick")chooseLetter(pick(MAL));else if(S.vt)tally();else if(S.pk)pickNext(pick(MAL));else doPass(S.c,"time's up")}else bc();
+},500);
+setInterval(()=>{if(isHost&&S)sendAll()},2000);
+ 
+// ---------- rendering ----------
+function render(){
+  if(!S)return;
+  const n=Math.max(S.seats.length,1),sc=SCENES[S.sc]||SCENES.camp,me=meIdx();
+  $("stage").className="s-"+S.sc;
+  $("stage").innerHTML=`<div class="mid">${sc[1]}<small>${S.L&&S.ph!=="lobby"?"Next: "+esc(S.L.toUpperCase()):sc[2]}</small></div>`+
+   S.seats.map((p,i)=>{const a=Math.PI/2+i*2*Math.PI/n,x=50+36*Math.cos(a),y=52+34*Math.sin(a),cur=S.ph!=="lobby"&&S.ph!=="end"&&i===S.c&&p.a,talk=cur&&(S.pz||(S.bub&&S.bub.i===i));
+    return `<div class="seat ${p.a?"":"out"} ${cur?"on":""}" style="left:${x}%;top:${y}%;z-index:${Math.round(y)}">
+    ${(S.pz&&cur)||(S.bub&&S.bub.i===i)?`<div class="bub">🎵 ${S.pz&&cur?"singing…":esc(S.bub.t)}</div>`:""}${fig(look(p,i),talk)}
+    <div class="nm">${esc(p.n)}${i===me?" (you)":""}${p.a?"":" 👀"}<br>⭐ ${p.p}</div></div>`}).join("");
+  const myTurn=S.ph==="play"&&me===S.c&&!S.hold&&S.seats[S.c].a;
+  $("lobby").hidden=S.ph!=="lobby";
+  $("pick").hidden=S.ph!=="pick";
+  $("play").hidden=S.ph!=="play";
+  $("endRow").hidden=S.ph!=="end";
+  $("bFr2").hidden=!(me_user&&isHost&&S.ph==="lobby");
+  $("final").hidden=S.ph!=="end";
+  $("rinfo").textContent=S.ph==="lobby"?"Rounds: "+S.R:S.ph==="end"?"":"Round "+Math.min(S.rd,S.R)+"/"+S.R+" · 🎯 50";
+  $("rm").hidden=$("rp").hidden=!(isHost&&S.ph!=="end");
+  $("endBtn").hidden=!(isHost&&(S.ph==="play"||S.ph==="pick"));
+  if(S.ph==="end")showFinal();
+  $("nextL").hidden=!(S.ph==="play"&&S.pk&&me===S.c&&!S.hold);
+  $("hz").hidden=!(isHost&&(S.ph==="play"||S.ph==="pick"));
+  $("hz").textContent=S.hz?"▶ Resume timer":"⏸ Pause timer";
+  if(S.ph==="lobby"){
+    $("codeShow").textContent=S.code;
+    $("scenes").innerHTML=Object.entries(SCENES).map(([k,v])=>`<button class="chip" data-k="${k}" aria-pressed="${k===S.sc}" ${isHost?"":"disabled"}>${v[0]}</button>`).join("");
+    $("hostBtns").hidden=!isHost;
+    $("lobbyHint").textContent=S.msg||"";
+  }
+  if(S.ph==="pick"){
+    $("pickTxt").textContent=me===S.c?"You start! Pick the first letter.":S.seats[S.c].n+" is picking the first letter…";
+    $("letters").hidden=me!==S.c;$("fill0").style.width=Math.max(0,S.t/20*100)+"%";
+    $("fill0").style.background=S.hz?"#3b82f6":"var(--acc2)";
+  }
+  if(S.ph==="play"||S.ph==="end"){
+    const cur=S.seats[S.c];
+    $("need").innerHTML=S.vt?(me===S.c?"Friends are voting… 👍👎":esc(cur.n)+" finished. Valid song?"):
+      S.pk?(me===S.c?"Nice! Type the next letter.":esc(cur.n)+" is choosing the next letter…"):
+      `${me===S.c?"Your turn":esc(cur.n)+"'s turn"}: <b>${esc(S.L.toUpperCase())}</b>${S.half?" (5 pts)":""}`;
+    const f=$("fill");f.style.width=(S.ph==="end"?0:Math.max(0,(S.pz?S.pl/90:S.t/20)*100))+"%";
+    f.style.background=S.hz||S.pz?"#3b82f6":S.t<=6?"var(--acc)":"var(--acc2)";
+    $("mine").hidden=!myTurn||!!S.pk||!!S.vt;$("bPass").hidden=!!S.pz;$("vote").hidden=!(S.vt&&me>=0&&me!==S.c&&S.seats[me].a&&!S.v[myId()]);
+    $("mic").textContent=S.pz?"✅ Finished":"🎤 Start singing";
+    $("micHelp").textContent=S.pz?"You're live. Tap Finished when done.":"Mic goes live. Timer pauses.";
+    $("msg").textContent=(S.vt?"Votes: 👍 "+Object.values(S.v).filter(x=>x>0).length+"  👎 "+Object.values(S.v).filter(x=>x<0).length+" ":"")+(S.hz?"⏸ Paused by host. ":"")+(S.pz?"Timer paused. ":"")+S.msg+(S.ph==="end"&&me>=0&&!S.seats[me].a?" You were a spectator.":"");
+    $("log").innerHTML=S.log.map(l=>"<li>"+esc(l)+"</li>").join("");
+  }
+  applyMic();
+  updAcct();
+}
+ 
+let acctReady=false;
+function updAcct(){$("acct").hidden=!(acctReady&&($("game").hidden||!S||S.ph==="lobby"))}
+let popped=false,saved=false,saveNote="",me_user=null,prof={gd:"",dc:""};
+function showFinal(){
+  const r=[...S.seats].sort((a,b)=>b.p-a.p),bd={};r.forEach(s=>bd[s.id]=[]);
+  if(r[0])bd[r[0].id].push("🥇 Champion");
+  const top=k=>{const m=Math.max(...S.seats.map(s=>s[k]));return m>0?S.seats.find(s=>s[k]===m):null};
+  const gv=top("w");if(gv)bd[gv.id].push("🎤 Golden Voice");
+  const fan=top("u");if(fan)bd[fan.id].push("👍 Crowd Favourite");
+  r.forEach(s=>{if(s.p>=50)bd[s.id].push("🎯 50 Club");if(!bd[s.id].length)bd[s.id].push("🌟 Good Effort")});
+  const medal=["🥇","🥈","🥉"];
+  $("fTitle").innerHTML=r.length?"🎉 "+esc(r[0].n)+" wins! 👏":"Game over";
+  $("fList").innerHTML=r.map((s,i)=>`<li>${medal[i]||(i+1)+"."} ${esc(s.n)} ${bd[s.id].map(b=>`<span class="bdg">${b}</span>`).join("")}<b>${s.p}</b></li>`).join("");
+  const mi=r.findIndex(s=>s.id===myId()),upd=()=>{$("fMsg").textContent=[S.msg,saveNote].filter(Boolean).join(" ")};
+  if(!saved&&mi>=0){saved=true;
+    if(me_user&&window.AK){saveNote="Saving…";
+      AK.save({code,players:r.length,rank:mi+1,points:r[mi].p,won:mi===0,w:r[mi].w,badges:bd[r[mi].id],board:r.map(x=>({n:x.n,p:x.p,g:x.g||""}))})
+        .then(()=>{saveNote="✅ Saved."}).catch(()=>{saveNote="⚠️ Couldn't save."}).finally(upd)}
+    else if(window.AK)saveNote="Sign in to save results."}
+  upd();
+  if(!popped){popped=true;pop();setTimeout(pop,1000)}
+}
+function pop(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const c=document.createElement("canvas");c.style.cssText="position:fixed;inset:0;pointer-events:none;z-index:999";document.body.append(c);
+  const x=c.getContext("2d"),W=c.width=innerWidth,H=c.height=innerHeight,cols=["#ffd23f","#ff7ab8","#5ef2d6","#fff","#7b5cff","#ff7b54"];
+  const P=Array.from({length:180},(_,i)=>({x:i%2?W*.1:W*.9,y:H*.85,vx:(i%2?1:-1)*(2+Math.random()*9),vy:-9-Math.random()*13,r:3+Math.random()*5,c:cols[Math.random()*6|0],a:Math.random()*6,va:(Math.random()-.5)*.4}));
+  let f=0;(function loop(){x.clearRect(0,0,W,H);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});
+    if(++f<240)requestAnimationFrame(loop);else c.remove()})();
+}
+// ---------- voice chat (mesh of PeerJS calls) ----------
+const OPUS={sdpTransform:sdp=>sdp.replace("useinbandfec=1","useinbandfec=1;maxaveragebitrate=96000;usedtx=0")};
+function silent(){const ac=new (window.AudioContext||window.webkitAudioContext)();return ac.createMediaStreamDestination().stream}
+async function getMic(){try{mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:false,autoGainControl:false}})}catch(e){mic=null}}
+function attach(call){
+  calls[call.peer]=call;let ok=false;
+  const drop=()=>{if(calls[call.peer]===call)delete calls[call.peer];const a=$("a-"+call.peer);a&&a.remove()};
+  call.on("stream",st=>{ok=true;let a=$("a-"+call.peer);if(!a){a=document.createElement("audio");a.id="a-"+call.peer;a.autoplay=true;document.body.append(a)}a.srcObject=st;a.play&&a.play().catch(()=>{})});
+  call.on("close",drop);call.on("error",drop);
+  setTimeout(()=>{if(!ok){try{call.close()}catch(e){}drop()}},12000);
+}
+function initVoice(){
+  peer.on("call",c=>{c.answer(mic||silent(),OPUS);attach(c)});
+  voiceReady=true;$("vc").hidden=false;$("vc").textContent=mic?"🎙️ Mic on":"🔇 No mic";applyMic();
+}
+function voiceSync(){
+  if(!voiceReady||!peer||!S||!peer.id)return;
+  S.seats.forEach(s=>{if(s.id!==peer.id&&!calls[s.id]&&peer.id<s.id){try{attach(peer.call(s.id,mic||silent(),OPUS))}catch(e){}}});
+}
+// lobby and end: everyone can talk. During singing: only the current singer, and only after Start.
+function applyMic(){
+  if(!mic||!S)return;
+  const inGame=S.ph==="play"||S.ph==="pick";
+  const live=userMic&&(!inGame||(S.ph==="play"&&!S.pk&&S.pz&&S.c===meIdx()));
+  mic.getAudioTracks()[0].enabled=live;
+  $("vc").textContent=!userMic?"🔇 Muted":inGame?(live?"🎙️ You're live":"👂 Listening"):"🎙️ Mic on";
+}
+$("vc").onclick=()=>{if(!mic)return;userMic=!userMic;applyMic()};
+ 
+// ---------- controls ----------
+$("mic").onclick=()=>{if(S&&S.pz)doAct({k:"done"});else doAct({k:"pause",on:1})};
+$("hz").onclick=()=>{if(isHost&&S){S.hz=S.hz?0:1;bc()}};
+function sendNext(){const c=lastLetter($("nl").value);if(!c)return;$("nl").value="";doAct({k:"letter",c})}
+$("bNext").onclick=sendNext;$("nl").onkeydown=e=>{if(e.key==="Enter")sendNext()};
+$("letters").innerHTML=MAL.map(c=>`<button data-c="${c}">${c}</button>`).join("");
+$("letters").onclick=e=>{const c=e.target.dataset.c;if(c&&S.ph==="pick"&&meIdx()===S.c)doAct({k:"letter",c})};
+$("scenes").onclick=e=>{const k=e.target.dataset.k;if(k&&isHost&&SCENES[k]){S.sc=k;bc()}};
+$("bGo").onclick=startGame;
+$("bPass").onclick=()=>doAct({k:"pass"});
+$("vUp").onclick=()=>doAct({k:"vote",v:1});$("vDn").onclick=()=>doAct({k:"vote",v:-1});
+$("rm").onclick=()=>{if(isHost&&S.R>1){S.R--;bc()}};$("rp").onclick=()=>{if(isHost&&S.R<20){S.R++;bc()}};
+$("endBtn").onclick=()=>{if(isHost&&confirm("End the game now?"))endGame()};
+$("bAgain").onclick=()=>{location.href=location.pathname};
+$("leave").onclick=()=>{
+  if(!confirm(isHost?"Leaving ends the game for everyone. Leave?":"Leave the group?"))return;
+  try{conn&&conn.close()}catch(e){}try{peer&&peer.destroy()}catch(e){}
+  location.href=location.pathname;
+};
+$("bCopy").onclick=()=>{const u=location.href.split("#")[0]+"#"+code;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{$("bCopy").textContent="✅ Copied"}).catch(()=>{prompt("Copy invite link:",u)})};
+ 
+// ---------- entry ----------
+function enter(){$("start").hidden=true;$("game").hidden=false;updAcct()}
+function nick(){myName=($("nick").value.trim()||"Singer").slice(0,14)}
+function msg(t){$("startMsg").textContent=t}
+function gone(id){
+  delete conns[id];delete names[id];delete guids[id];delete profs[id];if(!isHost||!S)return;
+  if(S.ph==="lobby"){buildSeats();bc();return}
+  const i=S.seats.findIndex(x=>x.id===id);
+  if(i>=0&&S.seats[i].a&&S.ph!=="end"){if(i===S.c&&!S.hold)out(i,"left");else{S.seats[i].a=0;if(alive().length<=1)endGame();else bc()}}
+}
+const openPeer=id=>new Promise((res,rej)=>{const p=id?new Peer(id):new Peer();p.on("open",()=>res(p));p.on("error",rej)});
+ 
+$("bHost").onclick=async()=>{
+  nick();if(typeof Peer==="undefined"){msg("Couldn't load the connection library. Reload the page.");return}
+  msg("Allow the microphone…");await getMic();msg("Opening room…");
+  for(let k=0;k<3&&!peer;k++){
+    code=Math.random().toString(36).slice(2,6).toUpperCase();
+    try{peer=await openPeer("ak-"+code.toLowerCase())}catch(e){peer=null;if(e.type!=="unavailable-id"){msg("Couldn't reach the connection service ("+(e.type||"error")+"). Try again.");return}}
+  }
+  if(!peer){msg("Couldn't create a room. Try again.");return}
+  isHost=true;S=fresh();S.code=code;
+  initVoice();
+  peer.on("connection",c=>{
+    c.on("open",()=>{
+      if(S.ph!=="lobby"){c.send({t:"err",m:"Game already started."});setTimeout(()=>c.close(),400);return}
+      if(S.seats.length>=8){c.send({t:"err",m:"Group is full."});setTimeout(()=>c.close(),400);return}
+      conns[c.peer]=c;
+    });
+    c.on("data",d=>{
+      if(!d||!conns[c.peer])return;
+      if(d.t==="hi"){names[c.peer]=String(d.n||"Singer").slice(0,14);guids[c.peer]=String(d.g||"").slice(0,40);profs[c.peer]={gd:String(d.gd||"").slice(0,1),dc:String(d.dc||"").slice(0,7)};buildSeats();bc()}
+      else if(d.t==="act")act(c.peer,d.d||{});
+    });
+    c.on("close",()=>gone(c.peer));c.on("error",()=>gone(c.peer));
+  });
+  enter();buildSeats();bc();
+};
+$("bJoin").onclick=async()=>{
+  nick();const c=$("jcode").value.trim().toLowerCase().replace(/[^a-z0-9]/g,"");
+  if(c.length<3){msg("Enter the invite code.");return}
+  if(typeof Peer==="undefined"){msg("Couldn't load the connection library. Reload the page.");return}
+  msg("Allow the microphone…");await getMic();msg("Joining…");
+  try{peer=await openPeer()}catch(e){msg("Couldn't reach the connection service. Try again.");return}
+  initVoice();
+  let opened=false;
+  peer.on("error",e=>{if(!opened)msg(e.type==="peer-unavailable"?"No room with that code.":"Connection problem ("+e.type+").")});
+  conn=peer.connect("ak-"+c,{serialization:"json",reliable:true});
+  setTimeout(()=>{if(!opened)msg("Couldn't reach that room. Check the code.")},9000);
+  conn.on("open",()=>{
+    opened=true;isHost=false;code=c.toUpperCase();S=fresh();S.code=code;
+    conn.send({t:"hi",n:myName,g:me_user?me_user.uid:"",gd:prof.gd,dc:prof.dc});enter();render();
+  });
+  conn.on("data",d=>{
+    if(!d)return;
+    if(d.t==="st"){S=d.s;render();voiceSync()}
+    else if(d.t==="err"){opened=false;msg(d.m)}
+  });
+  conn.on("close",()=>{if(S&&opened){S.ph="end";S.w=-1;S.msg="Host left the game.";render()}});
+};
+// ---------- Google login, history, leaderboard ----------
+window.akAuth=u=>{
+  me_user=u;acctReady=true;updAcct();$("acctOut").hidden=!!u;$("acctIn").hidden=!u;
+  if(u){
+    $("pName").textContent=u.name||"";$("pic").hidden=!u.photo;if(u.photo)$("pic").src=u.photo;
+    if(!$("nick").value)$("nick").value=(u.name||"").split(" ")[0].slice(0,14);
+    AK.stats().then(d=>{prof={gd:d.gd||"m",dc:/^#[0-9a-f]{6}$/i.test(d.dc||"")?d.dc:"#d6336c"};syncProf()}).catch(()=>{});
+    openTab("f");
+  }else{prof={gd:"",dc:""};clearInterval(frT)}
+  if(u&&!hb){hb=setInterval(()=>AK.beat().catch(()=>{}),30000);AK.beat().then(()=>AK.reconcile()).catch(()=>{});AK.onInvite(showInvite)}
+};
+function syncProf(){
+  document.querySelectorAll("#gdr [data-gd]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gd===prof.gd));
+  $("dress").value=prof.dc||"#d6336c";$("prev").innerHTML=fig(look({gd:prof.gd,dc:prof.dc},0),false);
+}
+function saveProf(){if(window.AK&&me_user)AK.saveProfile(prof).catch(()=>{})}
+$("gdr").onclick=e=>{const g=e.target.dataset.gd;if(g){prof.gd=g;syncProf();saveProf()}};
+$("dress").oninput=e=>{prof.dc=e.target.value;syncProf()};$("dress").onchange=saveProf;
+function openTab(t){
+  [["F","f"],["H","h"],["P","p"],["W","w"]].forEach(([k,v])=>$("t"+k).setAttribute("aria-pressed",v===t));
+  $("fr").hidden=t!=="f";$("sBody").hidden=t==="f";clearInterval(frT);
+  if(t==="f"){frRefresh();frT=setInterval(frRefresh,20000)}else openStats(t);
+}
+$("tF").onclick=()=>openTab("f");$("tH").onclick=()=>openTab("h");$("tP").onclick=()=>openTab("p");$("tW").onclick=()=>openTab("w");
+$("gIn").onclick=()=>AK.signIn().catch(()=>msg("Sign-in failed."));
+$("gOut").onclick=()=>AK.signOut();
+async function openStats(t){
+  const B=$("sBody"),md=["🥇","🥈","🥉"];B.textContent="Loading…";
+  try{
+    if(t==="h"){
+      const [u,h,fl]=await Promise.all([AK.stats(),AK.history(),AK.friends()]);const fset=new Set(fl.map(f=>f.uid));
+      B.innerHTML=`<p class="sub"><b>${u.games||0}</b> games · <b>${u.wins||0}</b> wins · <b>${u.points||0}</b> points · best <b>${u.best||0}</b></p>`+
+        (h.length?`<ul class="fin">`+h.map(x=>`<li>${x.rank===1?"🥇":"#"+x.rank}<span style="flex:1">${x.date?x.date.toDate().toLocaleDateString("ml-IN"):""} · ${x.players} players ${(x.badges||[]).map(b=>`<span class="bdg">${esc(b)}</span>`).join("")}</span><b>${x.points}</b><div style="flex-basis:100%">${(x.board||[]).filter(b=>b.g&&b.g!==me_user.uid).map(b=>fset.has(b.g)?`<span class="bdg">✓ ${esc(b.n)}</span>`:`<button class="chip" data-add="${b.g}" data-nm="${esc(b.n)}">➕ ${esc(b.n)}</button>`).join(" ")}</div></li>`).join("")+`</ul>`:`<p class="sub">No games yet.</p>`);
+    }else{
+      const rows=await AK.board(t==="p"?"points":"wins");
+      B.innerHTML=rows.length?`<ul class="fin">`+rows.map((x,i)=>`<li>${md[i]||(i+1)+"."}<span style="flex:1">${esc(x.name||"Singer")} <span class="bdg">${x.games||0} games</span></span><b>${x[t==="p"?"points":"wins"]||0}</b></li>`).join("")+`</ul>`:`<p class="sub">Nobody yet.</p>`;
+    }
+  }catch(e){B.textContent="Couldn't load. Check Firestore rules."}
+}
+let hb=null,rqs=[],frT=null,invId=null;
+function showInvite(d,id){invId=id;$("toastTxt").textContent="🎤 "+d.fromName+" invited you! Code: "+d.code;$("toastJoin").hidden=$("start").hidden;$("toastAdd").hidden=!me_user;$("toastAdd").disabled=false;$("toastAdd").textContent="➕ Add friend";$("toastAdd").dataset.g=d.from;$("toastAdd").dataset.nm=d.fromName;$("toastJoin").dataset.c=d.code;$("toast").hidden=false}
+function closeToast(){$("toast").hidden=true;if(invId&&window.AK)AK.delInvite(invId).catch(()=>{});invId=null}
+$("toastX").onclick=closeToast;
+function addFriend(g,nm,btn){AK.addById(g,nm).then(()=>{btn.textContent="✅ Sent";btn.disabled=true}).catch(()=>{btn.textContent="⚠️ Already sent"})}
+$("toastAdd").onclick=e=>addFriend(e.target.dataset.g,e.target.dataset.nm,e.target);
+$("sBody").onclick=e=>{const g=e.target.dataset.add;if(g)addFriend(g,e.target.dataset.nm,e.target)};
+async function frRefresh(){
+  if(!window.AK||!me_user)return;const B=$("frBody");
+  try{
+    $("myFc").textContent=await AK.beat();await AK.reconcile();
+    const [rq,fl]=await Promise.all([AK.reqs(),AK.friends()]);rqs=rq;
+    const inc=rq.filter(r=>r.to===me_user.uid&&r.status==="pending"),canInv=isHost&&S&&S.ph==="lobby";
+    B.innerHTML=(inc.length?`<p class="sub">Requests</p><ul class="fin">`+inc.map(r=>`<li><span style="flex:1">${esc(r.fromName)}</span><button class="chip" data-acc="${r.id}">Accept</button></li>`).join("")+`</ul>`:"")+
+      (fl.length?`<ul class="fin">`+fl.map(f=>{const on=Date.now()-(f.seen||0)<75000;return `<li>${on?"🟢":"⚪"}<span style="flex:1">${esc(f.name||"Singer")}</span>${on&&canInv?`<button class="chip" data-inv="${f.uid}">🎤 Invite</button>`:""}</li>`}).join("")+`</ul>`:`<p class="sub">Add friends with their code.</p>`);
+  }catch(e){B.textContent="Couldn't load. Check Firestore rules."}
+}
+$("bFr2").onclick=()=>{openTab("f");$("acct").scrollIntoView({behavior:"smooth"})};
+$("frBody").onclick=async e=>{
+  const a=e.target.dataset.acc,v=e.target.dataset.inv;
+  try{
+    if(a){await AK.accept(a,rqs.find(x=>x.id===a));frRefresh()}
+    if(v){await AK.invite(v,code);e.target.textContent="✅ Sent"}
+  }catch(err){$("fcMsg").textContent="Failed. Try again."}
+};
+$("fcAdd").onclick=()=>{const c=$("fcIn").value.trim().toUpperCase();if(!c)return;
+  AK.addByCode(c).then(()=>{$("fcMsg").textContent="✅ Request sent";$("fcIn").value=""}).catch(e=>{$("fcMsg").textContent=e.message==="nf"?"Code not found.":"Couldn't add."})};
+if(location.hash.length>1)$("jcode").value=location.hash.slice(1,7);
+</script>
+<script type="module">
+// 1) Paste your Firebase web-app config here (see setup steps). Leave as is to play without login.
+const CFG={apiKey:"AIzaSyBYZkCoX0trp3QRwsuy1iYNLJGo2rHIh3U",authDomain:"antakshari-circle.firebaseapp.com",projectId:"antakshari-circle",appId:"1:370709803466:web:a14308d99a0e7b16eadf33"};
+if(!CFG.apiKey.startsWith("YOUR")){
+  try{
+    const b="https://www.gstatic.com/firebasejs/10.12.2/";
+    const [{initializeApp},A,F]=await Promise.all([import(b+"firebase-app.js"),import(b+"firebase-auth.js"),import(b+"firebase-firestore.js")]);
+    const app=initializeApp(CFG),auth=A.getAuth(app),db=F.getFirestore(app);
+    const uid=()=>auth.currentUser.uid;
+    let FC=null;
+    window.AK={
+      signIn:()=>A.signInWithPopup(auth,new A.GoogleAuthProvider()),
+      signOut:()=>A.signOut(auth),
+      async save(r){
+        const ref=F.doc(db,"users",uid()),snap=await F.getDoc(ref),best=Math.max(snap.exists()?snap.data().best||0:0,r.points);
+        await F.setDoc(ref,{name:auth.currentUser.displayName||"Singer",updated:F.serverTimestamp(),best,games:F.increment(1),wins:F.increment(r.won?1:0),points:F.increment(r.points),approved:F.increment(r.w||0)},{merge:true});
+        await F.addDoc(F.collection(db,"history"),{uid:uid(),date:F.serverTimestamp(),code:r.code,players:r.players,rank:r.rank,points:r.points,won:r.won,badges:r.badges,board:r.board});
+      },
+      async stats(){const s=await F.getDoc(F.doc(db,"users",uid()));return s.exists()?s.data():{}},
+      async history(){const q=await F.getDocs(F.query(F.collection(db,"history"),F.where("uid","==",uid()),F.limit(50)));return q.docs.map(d=>d.data()).sort((a,b)=>(b.date?.seconds||0)-(a.date?.seconds||0))},
+      saveProfile:p=>F.setDoc(F.doc(db,"users",uid()),{gd:p.gd,dc:p.dc},{merge:true}),
+      beat:async()=>{FC=FC||uid().slice(0,8).toUpperCase();await F.setDoc(F.doc(db,"users",uid()),{name:auth.currentUser.displayName||"Singer",nl:(auth.currentUser.displayName||"").toLowerCase(),fc:FC,seen:Date.now()},{merge:true});return FC},
+      async addByCode(c){const q=await F.getDocs(F.query(F.collection(db,"users"),F.where("fc","==",c),F.limit(1)));if(q.empty||q.docs[0].id===uid())throw new Error("nf");const t=q.docs[0];await F.setDoc(F.doc(db,"reqs",uid()+"_"+t.id),{from:uid(),to:t.id,fromName:auth.currentUser.displayName||"Singer",status:"pending",ts:Date.now()})},
+      async addById(t,name){if(!t||t===uid())throw new Error("nf");await F.setDoc(F.doc(db,"reqs",uid()+"_"+t),{from:uid(),to:t,fromName:auth.currentUser.displayName||"Singer",toName:name||"",status:"pending",ts:Date.now()})},
+      async reqs(){const [a,b]=await Promise.all([F.getDocs(F.query(F.collection(db,"reqs"),F.where("to","==",uid()))),F.getDocs(F.query(F.collection(db,"reqs"),F.where("from","==",uid())))]);return [...a.docs,...b.docs].map(d=>({id:d.id,...d.data()}))},
+      async accept(id,r){await F.updateDoc(F.doc(db,"reqs",id),{status:"accepted"});await F.setDoc(F.doc(db,"users",uid()),{friends:F.arrayUnion(r.from)},{merge:true})},
+      async reconcile(){const q=await F.getDocs(F.query(F.collection(db,"reqs"),F.where("from","==",uid()),F.where("status","==","accepted")));const ids=q.docs.map(d=>d.data().to);if(ids.length)await F.setDoc(F.doc(db,"users",uid()),{friends:F.arrayUnion(...ids)},{merge:true})},
+      async friends(){const s=await F.getDoc(F.doc(db,"users",uid()));const ids=s.data()?.friends||[];const ds=await Promise.all(ids.map(i=>F.getDoc(F.doc(db,"users",i))));return ds.filter(d=>d.exists()).map(d=>({uid:d.id,...d.data()}))},
+      invite:(to,code)=>F.addDoc(F.collection(db,"invites"),{to,from:uid(),fromName:auth.currentUser.displayName||"Singer",code,ts:Date.now()}),
+      onInvite(cb){F.onSnapshot(F.query(F.collection(db,"invites"),F.where("to","==",uid())),s=>s.docChanges().forEach(c=>{if(c.type==="added"){const d=c.doc.data();if(Date.now()-d.ts<600000)cb(d,c.doc.id)}}))},
+      delInvite:id=>F.deleteDoc(F.doc(db,"invites",id)),
+      async board(k){const q=await F.getDocs(F.query(F.collection(db,"users"),F.orderBy(k,"desc"),F.limit(20)));return q.docs.map(d=>d.data())}
+    };
+    A.onAuthStateChanged(auth,u=>window.akAuth&&window.akAuth(u?{name:u.displayName,uid:u.uid,photo:u.photoURL}:null));
+  }catch(e){console.warn("Firebase unavailable",e)}
+}
+</script>
+</body>
+</html>
+ 
