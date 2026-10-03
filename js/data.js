@@ -1,0 +1,4 @@
+// Static data: scenes, Malayalam letters, character looks
+const SCENES={camp:["🏕️ Campfire","🔥","by the fire"],party:["🎉 Party","🪩","on the dance floor"],room:["🛋️ Living room","🎶","around the table"],hill:["⛰️ Hilltop view","⛰️","on the hilltop"],park:["🌳 Park","🌳","in the park"],beach:["🏖️ Beach","🏖️","on the beach"],resort:["🏝️ Resort pool","🏝️","by the pool"],river:["🛶 Backwaters","🛶","on the houseboat"],tea:["🍃 Tea hills","🍃","in the tea estate"]};
+const MAL="അ ആ ഇ ഉ എ ഒ ക ഗ ച ജ ട ത ദ ന പ ബ മ യ ര ല വ ശ സ ഹ".split(" ");
+const LK=[{s:"#f1c27d",h:"#2b1b12",t:"#d6336c",p:"#2b4a7a",st:0},{s:"#c68642",h:"#111",t:"#1c7c6d",p:"#4a4a4a",st:1},{s:"#8d5524",h:"#e8e8e8",t:"#e8a33d",p:"#6b4a2b",st:2},{s:"#e0ac69",h:"#5a2d0c",t:"#5b6bd6",p:"#222",st:1},{s:"#f1c27d",h:"#8b1a1a",t:"#f4f4f4",p:"#7a3b8c",st:0},{s:"#c68642",h:"#222",t:"#e05a2b",p:"#334466",st:2},{s:"#ffdbac",h:"#d9a441",t:"#2aa198",p:"#444",st:1},{s:"#8d5524",h:"#111",t:"#8e44ad",p:"#aa3333",st:0}];
