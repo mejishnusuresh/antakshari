@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>അന്താക്ഷരി ലൈവ്</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gayathri:wght@100;400;800&family=Manrope:wght@200..1000&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<main>
+<h1 aria-label="അന്താക്ഷരി live"><span style="--c:#ffd23f;--x:#c98a00;--r:-5deg">അ</span><span style="--c:#ff7ab8;--x:#b02a66;--r:4deg">ന്താ</span><span style="--c:#5ef2d6;--x:#15957f;--r:-3deg">ക്ഷ</span><span style="--c:#fff;--x:#8f7fc4;--r:5deg">രി</span><span class="live">live</span></h1>
+<div class="subrow"><div><button class="chip" id="leave" hidden>🚪 Leave</button></div>
+  <div class="acctslot"><button class="big ghost" id="gIn" title="Sign in with Google" hidden>🔐 Sign in</button><button class="avbtn" id="avBtn" aria-label="Open profile" hidden><img id="avImg" alt="" hidden><span class="ini" id="avIni"></span></button></div>
+</div>
+ 
+<section id="start" class="panel">
+  <div class="row"><label for="nick">Your name</label><input id="nick" placeholder="Singer" maxlength="12" autocomplete="off"></div>
+  <div class="row"><button class="big" id="bHost">Host a game</button></div>
+  <div class="row"><input id="jcode" placeholder="Invite code" maxlength="6" autocomplete="off" aria-label="Invite code"><button class="big alt" id="bJoin">Join</button></div>
+  <p class="sub" id="startMsg"></p>
+</section>
+
+<section id="groups" class="panel">
+  <div class="row" style="justify-content:space-between;margin-top:0"><b>🎪 Active groups</b><button class="chip" id="gRef">↻ Refresh</button></div>
+  <div id="gList"><p class="sub">Loading…</p></div>
+  <p class="sub" style="margin-bottom:0">Tap <b>Request</b> and the host will approve you.</p>
+</section>
+
+<div id="game" hidden>
+    <div id="stage" class="s-camp" aria-live="polite"></div>
+  <div class="row" style="justify-content:center"><button class="chip" id="vc" hidden>🎙️ Mic on</button>
+  <button class="chip" id="hz" hidden>⏸ Pause timer</button></div>
+  <div class="row" style="justify-content:center"><button class="chip" id="rm" hidden>−</button><span id="rinfo"></span><button class="chip" id="rp" hidden>+</button><button class="chip" id="endBtn" hidden>🏁 End game</button></div>
+ 
+  <section class="panel" id="lobby" hidden>
+    <div class="row" id="scenes" role="group" aria-label="Scene"></div>
+    <div class="row"><span>Invite code</span><span class="code" id="codeShow"></span></div>
+    <p class="need" id="gnShow" style="margin:0"></p>
+    <div class="row" id="gnRow" hidden><label for="gnIn">Group name</label><input id="gnIn" maxlength="24" autocomplete="off" placeholder="Name your group" style="flex:1"><button class="big" id="gnSave">Save</button></div>
+    <p class="sub" id="lobbyHint"></p>
+    <div id="reqBox" hidden></div>
+    <div class="row" id="hostBtns">
+      <button class="big ghost" id="bFr2" hidden>👥 Invite friends</button>
+      <button class="big ghost" id="bCopy">📋 Copy link</button>
+      <button class="big" id="bGo">Start</button>
+    </div>
+  </section>
+ 
+  <section class="panel" id="pick" hidden>
+    <p class="need" id="pickTxt"></p>
+    <div class="bar"><div id="fill0" style="height:100%;width:100%;background:var(--acc2)"></div></div>
+    <div class="letters" id="letters"></div>
+  </section>
+ 
+  <section class="panel" id="play" hidden>
+    <p class="need" id="need"></p>
+    <div class="bar"><div id="fill"></div></div>
+    <div id="mine" hidden>
+      <div class="row"><button class="big alt" id="mic">🎤 Start singing</button>
+        <span class="sub" style="margin:0" id="micHelp"></span><button class="big ghost" id="bPass">⏭ Pass</button></div>
+    </div>
+    <div id="vote" hidden><div class="row"><button class="big" id="vUp">👍 Valid</button><button class="big alt" id="vDn">👎 Invalid</button></div></div>
+    <div id="hrBox" hidden><button class="big alt" id="hrBtn">✋ Raise hand</button></div>
+    <div id="nextL" hidden><div class="letters" id="letters2"></div></div>
+    <p id="msg"></p>
+  </section>
+ 
+  <section class="panel" id="rapid" hidden>
+    <p class="need" id="rfT"></p><p class="sub" id="rfScore" style="margin:0 0 6px"></p>
+    <div class="bar"><div id="rfFill"></div></div>
+    <div class="row"><button class="big alt" id="rfBuzz">🔔 BUZZ!</button><button class="big" id="rfDoneB">✅ Finished</button></div>
+    <div class="row" id="rfVote"><button class="big" id="rfUp">👍 Valid</button><button class="big alt" id="rfDn">👎 Invalid</button></div>
+    <p id="rfMsg"></p>
+  </section>
+
+  <section class="panel" id="chat" hidden>
+    <div id="chatLog" aria-live="polite"></div>
+    <div class="row" style="margin-bottom:0"><input id="chatIn" maxlength="120" placeholder="Message" autocomplete="off" aria-label="Chat message" style="flex:1"><button class="big" id="chatSend">Send</button></div>
+  </section>
+
+  <section class="panel" id="final" hidden><p class="ttl" id="fTitle"></p><ul class="fin" id="fList"></ul><p class="sub" id="fMsg"></p></section>
+  <div class="row" id="endRow" hidden><button class="big" id="bAgain">Home</button></div>
+</div>
+<div class="sheetwrap" id="pm" hidden><section class="panel sheet" style="max-width:320px">
+  <p class="need" id="pmName" style="text-align:center"></p>
+  <div class="row" style="justify-content:center"><button class="big alt" id="pmRep">🚩 Report</button><button class="big" id="pmKick" style="background:#e53935" hidden>⛔ Kick out</button></div>
+  <div class="row" style="justify-content:center"><button class="chip" id="pmX">Cancel</button></div>
+  <p class="sub" id="pmMsg" style="text-align:center"></p>
+</section></div>
+<div class="sheetwrap" id="adm" hidden><section class="panel sheet" style="max-width:940px">
+  <div class="row" style="justify-content:space-between;margin-top:0"><b>🛡️ Admin dashboard</b><span><button class="chip" id="adRef">↻ Refresh</button> <button class="chip" id="adX">✖ Close</button></span></div>
+  <div class="row" id="adTabs"><button class="chip" data-at="ov">📊 Overview</button><button class="chip" data-at="us">👥 Users</button><button class="chip" data-at="gm">🎮 Games</button><button class="chip" data-at="gr">🎪 Groups</button><button class="chip" data-at="fb">💡 Feedback</button><button class="chip" data-at="rp">🚩 Reports</button><button class="chip" data-at="in">ℹ️ App info</button></div>
+  <div id="adBody"></div>
+</section></div>
+<div class="sheetwrap" id="acct" hidden><section class="panel sheet">
+  <div class="tabsq">
+    <button id="tPr" aria-pressed="false"><i>👤</i>Profile</button>
+    <button id="tF" class="outg" aria-pressed="false"><i>👥</i>Friends</button>
+    <button id="tH" class="outg" aria-pressed="false"><i>📜</i>History</button>
+    <button id="tP" class="outg" aria-pressed="false"><i>🏆</i>Leaders</button>
+    <button id="acctClose" aria-label="Close"><i>✖</i>Close</button>
+  </div>
+  <div id="acctIn">
+    <div id="prEd">
+      <div class="row"><img id="pic" alt="" width="56" height="56" style="border-radius:50%;object-fit:cover;background:#ffeacb" hidden><b id="pName" style="flex:1"></b><label class="chip" for="picIn" style="cursor:pointer">📷 Change photo</label><input type="file" id="picIn" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0" aria-label="Upload profile photo"></div>
+      <div class="row" id="gdr"><span>Gender</span><button class="chip" data-gd="m" aria-pressed="false">Male</button><button class="chip" data-gd="f" aria-pressed="false">Female</button><button class="chip" data-gd="o" aria-pressed="false">Other</button></div>
+      <div class="row"><label for="dress">Dress colour</label><input type="color" id="dress" value="#d6336c" style="padding:0;width:48px;height:36px"><span id="prev" style="width:44px;display:inline-block"></span></div>
+      <div class="row"><button class="chip red" id="gOut">🚪 Logout</button></div>
+    </div>
+    <div id="fr">
+      <div class="row"><span>Your friend code</span><span class="code" id="myFc">…</span></div>
+      <div class="row"><input id="fcIn" placeholder="Friend's code" maxlength="8" autocomplete="off" aria-label="Friend's code"><button class="big alt" id="fcAdd">Add</button></div>
+      <p class="sub" id="fcMsg"></p>
+      <div id="frBody"></div>
+    </div>
+    <div id="sBody" hidden></div>
+  </div>
+</section></div>
+<section class="panel info" id="howto">
+  <details>
+    <summary>📖 How to play</summary>
+    <ol>
+      <li><b>Host</b> a game (or <b>Join</b> with a 6-letter invite code). 2 to 8 players can play.</li>
+      <li>The host picks a scene and the number of rounds, then taps <b>Start</b>.</li>
+      <li>The first singer picks a starting letter (or one is chosen automatically after 20 seconds).</li>
+      <li>On your turn, tap <b>Start singing</b> and sing a song that begins with the shown letter. You have 20 seconds to begin and the mic goes live for up to 90 seconds. Tap <b>Finished</b> when done.</li>
+      <li>Everyone else votes 👍 Valid or 👎 Invalid. A valid song gives <b>+10</b> points, an invalid one <b>-10</b>.</li>
+      <li>Then pick the next letter: the next song must start with the <b>first letter of the last word</b> of your song.</li>
+      <li>Can't think of a song? Tap <b>Pass</b> (running out of time counts as a pass). Everyone else can <b>✋ raise a hand</b>: the first to raise it sings the same letter for <b>5</b> points (👍/👎 vote), then the round carries on.</li>
+      <li>The game ends when someone reaches <b>50 points</b>, rounds are over, or only one player is left. Highest score wins! 🏆 A tie goes to a <b>⚡ Rapid Fire</b> round: 5 random letters, the tied players buzz in, and the most valid answers (then the fastest total response) wins.</li><li>Tap a player to <b>🚩 report</b> them. The host can also <b>⛔ kick out</b> a player. Use the chat to talk during the game.</li>
+    </ol>
+    <p class="sub" style="margin-top:8px">Sign in with Google (on the home screen or in the lobby) to save your history, wins, leaderboard rank and to add friends.</p>
+  </details>
+</section>
+</main>
+<footer class="foot"><button class="linkbtn" id="sugBtn">💡 Had a suggestion?</button><small>by Jishnu Suresh</small></footer>
+<div class="sheetwrap" id="sug" hidden><section class="panel sheet" style="max-width:420px">
+<p class="ttl">💡 Had a suggestion?</p><p class="sub">Send your idea or feedback to <b>Jishnu</b></p>
+<textarea id="sugTx" maxlength="600" rows="5" placeholder="Type your suggestion…" style="width:100%;box-sizing:border-box;border-radius:12px;border:2px solid #d9c8f0;padding:10px;font:inherit"></textarea>
+<div class="row"><span class="sub" id="sugN" style="margin:0">0/600</span><button class="big ghost" id="sugX">Cancel</button><button class="big" id="sugSend">Send</button></div>
+<p class="sub" id="sugMsg"></p></section></div>
+<div class="toast" id="toast" hidden><span id="toastTxt" style="flex:1"></span><button class="big" id="toastJoin">Join</button><button class="chip" id="toastAdd">➕ Add friend</button><button class="chip" id="toastX">✖</button></div>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/characters.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/state.js"></script>
+<script src="js/game-host.js"></script>
+<script src="js/render.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/controls.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/suggestions.js"></script>
+<script src="js/entry.js"></script>
+<script src="js/account.js"></script>
+<script src="js/rapid-fire.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/moderation.js"></script>
+<script src="js/main.js"></script>
+<script type="module" src="js/firebase.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.env
+*.pem
+*service-account*.json
+.firebase/
+node_modules/
+.DS_Store
